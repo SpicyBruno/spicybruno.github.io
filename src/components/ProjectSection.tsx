@@ -1,4 +1,5 @@
 import { useTranslations } from "next-intl";
+import { ArrowUpRight } from "lucide-react";
 import type { Project } from "@/lib/projects";
 import { ProjectVisual } from "./ProjectVisual";
 import { Reveal } from "./motion/Reveal";
@@ -108,9 +109,10 @@ export function ProjectSection({ project, index, total }: ProjectSectionProps) {
               href={project.href}
               target="_blank"
               rel="noopener noreferrer"
-              className={`border-b border-current pb-1 text-[11px] uppercase tracking-[0.15em] ${s.muted}`}
+              className={`inline-flex items-center gap-1 border-b border-current pb-1 text-[11px] uppercase tracking-[0.15em] ${s.muted}`}
             >
               {tShared("ctaGithub")}
+              <ArrowUpRight className="ext-arrow size-3" aria-hidden="true" />
             </a>
           )}
         </div>

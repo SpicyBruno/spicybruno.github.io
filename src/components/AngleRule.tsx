@@ -13,23 +13,45 @@ import { useReducedMotion } from "./motion/useReducedMotion";
   il filo a 1px a qualsiasi larghezza, altrimenti lo stiramento lo ingrossa.
 */
 
-const DELAY = 0.6;
 const DURATION = 0.9;
 
-/** Gomito all'8% — mobile, rientro corto. */
-const PATH_SM = "M0,20 H40 L80,100 H1000";
-/** Gomito al 38% — da md in su. */
-const PATH_MD = "M0,20 H340 L380,100 H1000";
+/** Il gomito: il filo scende di 80 unità su 40 di corsa, sempre uguale. */
+const path = (elbowPct: number) => {
+  const x = elbowPct * 10;
+  return `M0,20 H${x} L${x + 40},100 H1000`;
+};
 
-export function AngleRule() {
+interface AngleRuleProps {
+  /**
+   * Inizio della deviazione in % della larghezza, mobile / da md in su.
+   * Il default (4 / 34) fa finire il gomito all'8% e al 38%: i rientri
+   * dell'ultima riga dell'hero.
+   */
+  elbow?: { sm: number; md: number };
+  /**
+   * "mount": parte con la sequenza d'ingresso dell'hero.
+   * "inView": si disegna quando entra nello schermo (contatti).
+   */
+  trigger?: "mount" | "inView";
+  delay?: number;
+}
+
+export function AngleRule({
+  elbow = { sm: 4, md: 34 },
+  trigger = "mount",
+  delay = 0.6,
+}: AngleRuleProps) {
   const reduced = useReducedMotion();
 
+  const target = { pathLength: 1 };
   const draw = {
     initial: { pathLength: reduced ? 1 : 0 },
-    animate: { pathLength: 1 },
+    ...(trigger === "mount"
+      ? { animate: target }
+      : { whileInView: target, viewport: { once: true, margin: "-15%" } }),
     transition: reduced
       ? { duration: 0 }
-      : { duration: DURATION, delay: DELAY, ease: [0.4, 0, 0.2, 1] as const },
+      : { duration: DURATION, delay, ease: [0.4, 0, 0.2, 1] as const },
   };
 
   return (
@@ -41,7 +63,7 @@ export function AngleRule() {
     >
       <motion.path
         {...draw}
-        d={PATH_SM}
+        d={path(elbow.sm)}
         className="md:hidden"
         fill="none"
         stroke="var(--accent)"
@@ -50,7 +72,7 @@ export function AngleRule() {
       />
       <motion.path
         {...draw}
-        d={PATH_MD}
+        d={path(elbow.md)}
         className="hidden md:block"
         fill="none"
         stroke="var(--accent)"

@@ -2,7 +2,8 @@
 
 import { useState } from "react";
 import { useTranslations } from "next-intl";
-import { Menu, X } from "lucide-react";
+import { AnimatePresence, motion, type Variants } from "framer-motion";
+import { ArrowUpRight, Menu, X } from "lucide-react";
 import { ThemeToggle } from "./ThemeToggle";
 import { LocaleSwitcher } from "./LocaleSwitcher";
 import { HWYL_URL } from "@/lib/site";
@@ -12,6 +13,40 @@ const anchors = [
   { href: "#chi-sono", key: "about" },
   { href: "#contatti", key: "contact" },
 ] as const;
+
+const EASE_OUT_EXPO = [0.16, 1, 0.3, 1] as const;
+
+/*
+  Il pannello mobile si srotola dal bordo della barra (clip-path, nessun
+  reflow) e si richiude più in fretta di come si apre. Le voci salgono di
+  poco, in fila: è un elenco, e appare come tale.
+  Con prefers-reduced-motion MotionConfig toglie gli spostamenti, restano
+  le dissolvenze.
+*/
+const panel: Variants = {
+  closed: {
+    clipPath: "inset(0 0 100% 0)",
+    transition: { duration: 0.2, ease: EASE_OUT_EXPO },
+  },
+  open: {
+    clipPath: "inset(0 0 0% 0)",
+    transition: {
+      duration: 0.32,
+      ease: EASE_OUT_EXPO,
+      delayChildren: 0.06,
+      staggerChildren: 0.04,
+    },
+  },
+};
+
+const item: Variants = {
+  closed: { opacity: 0, y: 8 },
+  open: {
+    opacity: 1,
+    y: 0,
+    transition: { duration: 0.2, ease: EASE_OUT_EXPO },
+  },
+};
 
 /*
   La barra resta fissa e cambia inchiostro insieme alla banda che scorre sotto:
@@ -57,9 +92,10 @@ export function Navbar() {
             href={HWYL_URL}
             target="_blank"
             rel="noopener noreferrer"
-            className="nav-link py-1 text-xs uppercase tracking-[0.18em]"
+            className="nav-link inline-flex items-center gap-1 py-1 text-xs uppercase tracking-[0.18em]"
           >
-            {t("hwyl")} <span aria-hidden="true">↗</span>
+            {t("hwyl")}
+            <ArrowUpRight className="ext-arrow size-3.5" aria-hidden="true" />
           </a>
           <LocaleSwitcher />
           <ThemeToggle />
@@ -72,46 +108,67 @@ export function Navbar() {
           aria-label={open ? t("closeMenu") : t("openMenu")}
           className="flex size-11 items-center justify-center md:hidden"
         >
-          {open ? (
-            <X className="size-5" aria-hidden="true" />
-          ) : (
-            <Menu className="size-5" aria-hidden="true" />
-          )}
+          {/* Le due icone si danno il cambio ruotando di un quarto di giro */}
+          <AnimatePresence mode="wait" initial={false}>
+            <motion.span
+              key={open ? "close" : "open"}
+              initial={{ opacity: 0, rotate: -90 }}
+              animate={{ opacity: 1, rotate: 0 }}
+              exit={{ opacity: 0, rotate: 90 }}
+              transition={{ duration: 0.15, ease: EASE_OUT_EXPO }}
+              className="flex"
+            >
+              {open ? (
+                <X className="size-5" aria-hidden="true" />
+              ) : (
+                <Menu className="size-5" aria-hidden="true" />
+              )}
+            </motion.span>
+          </AnimatePresence>
         </button>
       </nav>
 
-      {open && (
-        <div className="site-nav-panel px-6 pb-8 pt-2 md:hidden">
-          <ul className="flex flex-col">
-            {anchors.map((anchor) => (
-              <li key={anchor.key}>
+      <AnimatePresence>
+        {open && (
+          <motion.div
+            variants={panel}
+            initial="closed"
+            animate="open"
+            exit="closed"
+            className="site-nav-panel px-6 pb-8 pt-2 md:hidden"
+          >
+            <ul className="flex flex-col">
+              {anchors.map((anchor) => (
+                <motion.li key={anchor.key} variants={item}>
+                  <a
+                    href={anchor.href}
+                    onClick={() => setOpen(false)}
+                    className="block border-b py-4 text-sm uppercase tracking-[0.18em]"
+                  >
+                    {t(anchor.key)}
+                  </a>
+                </motion.li>
+              ))}
+              <motion.li variants={item}>
                 <a
-                  href={anchor.href}
+                  href={HWYL_URL}
+                  target="_blank"
+                  rel="noopener noreferrer"
                   onClick={() => setOpen(false)}
-                  className="block border-b py-4 text-sm uppercase tracking-[0.18em]"
+                  className="flex items-center gap-1.5 border-b py-4 text-sm uppercase tracking-[0.18em]"
                 >
-                  {t(anchor.key)}
+                  {t("hwyl")}
+                  <ArrowUpRight className="ext-arrow size-4" aria-hidden="true" />
                 </a>
-              </li>
-            ))}
-            <li>
-              <a
-                href={HWYL_URL}
-                target="_blank"
-                rel="noopener noreferrer"
-                onClick={() => setOpen(false)}
-                className="block border-b py-4 text-sm uppercase tracking-[0.18em]"
-              >
-                {t("hwyl")} <span aria-hidden="true">↗</span>
-              </a>
-            </li>
-          </ul>
-          <div className="mt-6 flex items-center gap-4">
-            <LocaleSwitcher />
-            <ThemeToggle />
-          </div>
-        </div>
-      )}
+              </motion.li>
+            </ul>
+            <motion.div variants={item} className="mt-6 flex items-center gap-4">
+              <LocaleSwitcher />
+              <ThemeToggle />
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </header>
   );
 }

@@ -20,8 +20,9 @@ export function ThemeToggle() {
       aria-label={t("themeToggle")}
       className="flex size-11 items-center justify-center border border-current"
     >
-      <Sun className="hidden size-4 dark:block" aria-hidden="true" />
-      <Moon className="size-4 dark:hidden" aria-hidden="true" />
+      {/* .theme-icon: l'icona che compare entra ruotando (globals.css) */}
+      <Sun className="theme-icon hidden size-4 dark:block" aria-hidden="true" />
+      <Moon className="theme-icon size-4 dark:hidden" aria-hidden="true" />
     </button>
   );
 }

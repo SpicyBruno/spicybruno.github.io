@@ -244,6 +244,74 @@ body {
   }
 }
 
+/*
+  CTA dei contatti: all'hover (o al focus da tastiera) il giallo si stende
+  sotto le righe da sinistra, riga dopo riga, e l'inchiostro passa al nero.
+  È un segno di evidenziatore, non un riempimento: background-size anima
+  solo pittura, nessun reflow. Esce in metà tempo di quanto entra.
+*/
+.ink-line {
+  background-image: linear-gradient(var(--accent), var(--accent));
+  background-repeat: no-repeat;
+  background-size: 0% 100%;
+  -webkit-box-decoration-break: clone;
+  box-decoration-break: clone;
+  padding-inline: 0.04em;
+  transition:
+    background-size 250ms var(--ease-emphasized),
+    color 250ms var(--ease-emphasized);
+}
+.ink-dot {
+  color: var(--accent);
+  transition: color 250ms var(--ease-emphasized);
+}
+.contact-cta:hover .ink-line,
+.contact-cta:focus-visible .ink-line {
+  background-size: 100% 100%;
+  color: var(--on-accent);
+  transition:
+    background-size 500ms var(--ease-out-expo),
+    color 200ms var(--ease-out-expo) 120ms;
+}
+.contact-cta:hover .ink-line-2,
+.contact-cta:focus-visible .ink-line-2 {
+  transition-delay: 70ms, 190ms;
+}
+/* Sul giallo il punto giallo sparirebbe: diventa nero con la riga */
+.contact-cta:hover .ink-dot,
+.contact-cta:focus-visible .ink-dot {
+  color: var(--on-accent);
+}
+
+/* Freccia dei link esterni: un passo verso l'angolo, verso fuori */
+.ext-arrow {
+  flex-shrink: 0;
+  transition: transform 150ms var(--ease-out-expo);
+}
+a:hover > .ext-arrow,
+a:focus-visible > .ext-arrow {
+  transform: translate(2px, -2px);
+}
+
+/*
+  Icona del tema: quella che compare entra ruotando. Il cambio di `display`
+  voluto dalla variante dark: riavvia l'animazione da solo, senza JS; e
+  next-themes blocca solo le transition, non le animation.
+*/
+@keyframes iconIn {
+  from {
+    opacity: 0;
+    transform: rotate(-90deg) scale(0.6);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+.theme-icon {
+  animation: iconIn 250ms var(--ease-out-expo);
+}
+
 /* Nav: filo sottile che si apre da sinistra */
 .nav-link {
   position: relative;
@@ -370,8 +438,26 @@ body {
 @media (prefers-reduced-motion: reduce) {
   .nav-link::after,
   .rule-link-arrow,
+  .ext-arrow,
   .visual-frame > * {
     transition: none;
+  }
+  .theme-icon {
+    animation: none;
+  }
+  /*
+    L'evidenziatore resta — è il feedback del link — ma compare intero,
+    senza stendersi.
+  */
+  .ink-line,
+  .ink-dot,
+  .contact-cta:hover .ink-line,
+  .contact-cta:focus-visible .ink-line {
+    transition: none;
+  }
+  a:hover > .ext-arrow,
+  a:focus-visible > .ext-arrow {
+    transform: none;
   }
   /* Il colore torna comunque, ma senza dissolvenza e senza scala */
   .visual-frame:hover > * {
