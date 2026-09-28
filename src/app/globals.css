@@ -1,0 +1,380 @@
+@import "tailwindcss";
+
+@custom-variant dark (&:where(.dark, .dark *));
+
+/*
+  Design token — editorial, portato da Portfolio Gabriele Brunazzo.dc.html.
+  Il sito alterna due bande: `void` (nera) e `paper` (chiara), con `mist` come
+  terza superficie neutra. L'accento giallo è puntuale, mai decorativo.
+  Ogni coppia testo/superficie è verificata WCAG 2.2 AA.
+  Mai usare hex nei componenti: solo questi token.
+*/
+:root {
+  /* Banda scura — identica nei due temi */
+  --void: #000000;
+  --on-void: #ffffff;
+  --on-void-muted: #999999; /* 5.9:1 su nero */
+  --void-line: #333333;
+  --void-ghost: #333333; /* numeri giganti su banda scura */
+
+  /* Banda chiara */
+  --paper: #ffffff;
+  --on-paper: #000000;
+  --on-paper-muted: #767676; /* 4.5:1 su bianco */
+  --paper-line: #e8e8e8;
+  --paper-ghost: #e8e8e8;
+
+  /* Terza superficie (sezione "Chi sono") */
+  --mist: #f5f5f5;
+
+  /* Cambiando --accent aggiorna anche ACCENT_HEX in src/lib/site.ts */
+  --accent: #f5d842;
+  --accent-ink: #6b5600; /* giallo scuro per testo piccolo su chiaro (5.2:1) */
+  --on-accent: #000000;
+
+  --focus-ring: #000000;
+}
+
+.dark {
+  --void: #000000;
+  --on-void: #ffffff;
+  --on-void-muted: #999999;
+  --void-line: #333333;
+  --void-ghost: #333333;
+
+  /* In scuro la banda "chiara" diventa grafite: resta il ritmo, non il bagliore */
+  --paper: #101010;
+  --on-paper: #f5f5f5;
+  --on-paper-muted: #9a9a9a; /* 5.6:1 su #101010 */
+  --paper-line: #2a2a2a;
+  --paper-ghost: #262626;
+
+  --mist: #191919;
+
+  --accent: #f5d842;
+  --accent-ink: #f5d842; /* 11:1 su grafite */
+  --on-accent: #000000;
+
+  --focus-ring: #f5d842;
+}
+
+@theme inline {
+  --color-void: var(--void);
+  --color-on-void: var(--on-void);
+  --color-on-void-muted: var(--on-void-muted);
+  --color-void-line: var(--void-line);
+  --color-void-ghost: var(--void-ghost);
+
+  --color-paper: var(--paper);
+  --color-on-paper: var(--on-paper);
+  --color-on-paper-muted: var(--on-paper-muted);
+  --color-paper-line: var(--paper-line);
+  --color-paper-ghost: var(--paper-ghost);
+
+  --color-mist: var(--mist);
+
+  --color-accent: var(--accent);
+  --color-accent-ink: var(--accent-ink);
+  --color-on-accent: var(--on-accent);
+
+  /*
+    Font system BBH. Solo peso 400: nessuna utility font-bold sopra queste
+    famiglie, il browser la sintetizzerebbe.
+    display = titoli giganti (hero, contatti) · title = titoli di sezione,
+    numeri e dati · sans = testo corrente.
+  */
+  --font-display: var(--font-hegarty), "Helvetica Neue", Impact, sans-serif;
+  --font-title: var(--font-bartle), "Helvetica Neue", Impact, sans-serif;
+  --font-sans: var(--font-bogle), "Helvetica Neue", Helvetica, Arial, sans-serif;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+}
+
+body {
+  background: var(--void);
+  color: var(--on-void);
+  font-family: var(--font-sans);
+}
+
+/*
+  Il fondo pagina segue la banda attraversata dallo scroll: le sezioni sono
+  trasparenti e dichiarano la propria banda. Vedi ScrollBands.tsx.
+*/
+#pf-root {
+  min-height: 100vh;
+  background-color: var(--void);
+  transition: background-color 900ms cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  #pf-root {
+    transition: none;
+  }
+}
+
+:focus-visible {
+  outline: 2px solid var(--focus-ring);
+  outline-offset: 3px;
+}
+
+::selection {
+  background: var(--accent);
+  color: var(--on-accent);
+}
+
+/* Easing di riferimento: decelerazione decisa, mai bounce */
+:root {
+  --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-emphasized: cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Occhiello: ricorre in ogni sezione come marcatore di apertura */
+.overline {
+  font-size: 0.75rem;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+}
+
+/* Etichetta tag: bordo 1px del colore corrente, mai riempimento */
+.tag {
+  font-size: 0.6875rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  border: 1px solid currentColor;
+  padding: 0.3125rem 0.625rem;
+}
+
+/*
+  Link con filo spesso: l'unico "bottone" del sistema.
+  La freccia avanza all'hover.
+*/
+.rule-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  min-height: 2.75rem;
+  font-size: 0.8125rem;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  border-bottom: 2px solid currentColor;
+  padding-bottom: 0.25rem;
+}
+.rule-link-arrow {
+  transition: transform 300ms var(--ease-out-expo);
+}
+.rule-link:hover .rule-link-arrow,
+.rule-link:focus-visible .rule-link-arrow {
+  transform: translateX(0.25rem);
+}
+
+/*
+  Navbar cangiante. Prima era in `mix-blend-difference`: gratis, ma su fondi
+  di mezzo tono (grafite, mist, immagini di copertina) il testo finiva vicino
+  al grigio e la leggibilità cadeva. Ora l'inchiostro è un token vero, scelto
+  dalla banda che ScrollBands pubblica su #pf-root, e c'è un velo opzionale
+  sotto la barra quando la pagina è scrollata.
+
+  --nav-ink: il colore del testo · --nav-surface: il fondo del velo.
+*/
+#pf-root {
+  --nav-ink: var(--on-void);
+  --nav-surface: var(--void);
+}
+#pf-root[data-current-band="paper"] {
+  --nav-ink: var(--on-paper);
+  --nav-surface: var(--paper);
+}
+#pf-root[data-current-band="mist"] {
+  --nav-ink: var(--on-paper);
+  --nav-surface: var(--mist);
+}
+
+.site-nav {
+  color: var(--nav-ink);
+  transition: color 900ms cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/*
+  Il velo sta su uno pseudo-elemento, non sul <nav>: così il testo non eredita
+  nessuna opacità e resta pieno anche quando il fondo è al 70%.
+*/
+.site-nav::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background-color: color-mix(in srgb, var(--nav-surface) 72%, transparent);
+  backdrop-filter: blur(12px);
+  border-bottom: 1px solid
+    color-mix(in srgb, var(--nav-ink) 12%, transparent);
+  opacity: 0;
+  transition:
+    opacity 400ms var(--ease-emphasized),
+    background-color 900ms cubic-bezier(0.4, 0, 0.2, 1);
+}
+#pf-root[data-scrolled="true"] .site-nav::before {
+  opacity: 1;
+}
+
+/* Pannello mobile: opaco, altrimenti il contenuto lo attraversa */
+.site-nav-panel {
+  background-color: var(--nav-surface);
+  color: var(--nav-ink);
+  transition:
+    background-color 900ms cubic-bezier(0.4, 0, 0.2, 1),
+    color 900ms cubic-bezier(0.4, 0, 0.2, 1);
+}
+.site-nav-panel a {
+  border-color: color-mix(in srgb, var(--nav-ink) 20%, transparent);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .site-nav,
+  .site-nav::before,
+  .site-nav-panel {
+    transition: none;
+  }
+}
+
+/* Nav: filo sottile che si apre da sinistra */
+.nav-link {
+  position: relative;
+}
+.nav-link::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: -0.35em;
+  height: 1px;
+  background: currentColor;
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 300ms var(--ease-out-expo);
+}
+.nav-link:hover::after,
+.nav-link:focus-visible::after {
+  transform: scaleX(1);
+}
+
+/*
+  Animazioni legate allo scroll — timeline nativa `view()`, zero listener.
+  Ogni elemento ha il proprio avanzamento: nessun --delay da tarare a mano
+  sull'altezza del documento, quindi niente che si disallinea quando cambia
+  il contenuto.
+*/
+@keyframes scrubIn {
+  from {
+    opacity: 0;
+    transform: translateY(40px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@keyframes heroExit {
+  from {
+    opacity: 1;
+    transform: none;
+  }
+  to {
+    opacity: 0;
+    transform: translateY(-60px);
+  }
+}
+
+@keyframes coverUnmask {
+  from {
+    opacity: 0;
+    clip-path: inset(18% 0 0 0);
+  }
+  to {
+    opacity: 1;
+    clip-path: inset(0 0 0 0);
+  }
+}
+
+/*
+  Lo stato iniziale nascosto vive DENTRO tutti e due i guard. Se `opacity: 0`
+  uscisse da qui, un browser senza `view()` — o chi ha ridotto le animazioni —
+  si troverebbe i titoli invisibili per sempre. Senza supporto si vede
+  direttamente lo stato finale.
+*/
+@supports (animation-timeline: view()) {
+  @media (prefers-reduced-motion: no-preference) {
+    .scrub-in {
+      animation: scrubIn linear both;
+      animation-timeline: view();
+      animation-range: entry 10% cover 35%;
+    }
+
+    /*
+      Sui wrapper del contenuto hero, mai sulla <section>: ScrollBands misura
+      gli elementi [data-band] con getBoundingClientRect, e una transform
+      sulla sezione falserebbe il calcolo della banda.
+    */
+    .hero-exit {
+      animation: heroExit linear both;
+      animation-timeline: view();
+      animation-range: exit 0% exit 100%;
+    }
+
+    /*
+      Sulla cornice (l'anchor), non sull'immagine: l'hover anima transform e
+      filter sull'<img>. Elementi diversi e proprietà diverse, quindi le due
+      animazioni si sommano invece di annullarsi.
+    */
+    .cover-scrub {
+      animation: coverUnmask linear both;
+      animation-timeline: view();
+      animation-range: entry 15% cover 45%;
+    }
+  }
+}
+
+/*
+  Cornice immagine: nessun bordo, solo crop. Le cover vivono in bianco e nero
+  e tornano a colori all'hover — così le copertine Canva non litigano con la
+  palette della pagina e il colore diventa la ricompensa del passaggio.
+
+  Il desaturato sta dentro @media (hover: hover): su touch non esiste stato
+  hover, e senza questo filtro le cover resterebbero grigie per sempre.
+*/
+.visual-frame {
+  overflow: hidden;
+}
+
+@media (hover: hover) {
+  .visual-frame > * {
+    filter: grayscale(1);
+    transition:
+      transform 400ms var(--ease-emphasized),
+      filter 400ms var(--ease-emphasized);
+  }
+  .visual-frame:hover > * {
+    filter: none;
+    transform: scale(1.015);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .nav-link::after,
+  .rule-link-arrow,
+  .visual-frame > * {
+    transition: none;
+  }
+  /* Il colore torna comunque, ma senza dissolvenza e senza scala */
+  .visual-frame:hover > * {
+    transform: none;
+  }
+}

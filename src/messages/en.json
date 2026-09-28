@@ -1,0 +1,94 @@
+{
+  "nav": {
+    "brand": "HWYL LAB",
+    "works": "Work",
+    "about": "About",
+    "contact": "Contact",
+    "hwyl": "HWYL Studio",
+    "skipToContent": "Skip to main content",
+    "openMenu": "Open menu",
+    "closeMenu": "Close menu",
+    "themeToggle": "Toggle light/dark theme"
+  },
+  "hero": {
+    "overline": "Digital Media Strategist — Strategy · Web · Data",
+    "titleLines": ["Campaigns", "impossible", "to ignore"],
+    "name": "Gabriele Brunazzo",
+    "scroll": "Scroll"
+  },
+  "manifesto": {
+    "overline": "Manifesto",
+    "title": "Every brief. Same answer: find the right angle.",
+    "body": "Media strategy and digital craft in the same person. I design end-to-end Meta funnels — research, audiences, creative, budget — and personally build the sites, dashboards and web experiences that carry them."
+  },
+  "projects": {
+    "overline": "Selected work",
+    "count": "{count, number, ::00} projects",
+    "viewLabel": "Project {index} of {total}",
+    "ctaGithub": "View on GitHub",
+    "ctaLive": "Visit the live site",
+    "ctaDeck": "Read the full deck",
+    "hwyl": {
+      "title": "HWYL Studio",
+      "meta": "Live site · vanilla HTML/CSS/JS",
+      "tags": ["Web design", "Motion", "E-commerce"],
+      "description": "Portfolio and commissions landing for an editorial poster studio. OKLCH design tokens, a hero that dissolves on scroll and FLIP thumbnail swaps with Motion One — all vanilla, zero build step."
+    },
+    "financeDashboard": {
+      "title": "Finance Dashboard",
+      "meta": "Web app · offline-first",
+      "tags": ["Data viz", "PWA", "Product"],
+      "description": "A personal finance dashboard built as a PWA: installable, offline-first with a service worker, the whole interface in a single HTML file. Data, charts and budgets always within reach."
+    },
+    "carolus": {
+      "title": "Carolus Archive",
+      "meta": "Digital archive · one-page",
+      "tags": ["Digital heritage", "Web", "Storytelling"],
+      "description": "A one-page digital archive for the painter Carlo Chiavegato, known as Carolus (1923–2015): paintings, photography, biography and criticism gathered into a spare static site, built to last."
+    },
+    "sunnee": {
+      "title": "Sunnee — Meta Ads Strategy",
+      "meta": "Meta Ads project · 30-slide deck · Canva",
+      "tags": ["Meta Ads", "Brand strategy", "Funnel design"],
+      "description": "End-to-end Meta strategy for a sustainable beachwear brand: competitor analysis, two buyer personas with customer journeys, a TOFU→BOFU funnel across four campaigns, native Reels creative and a budget plan with optimisation logic.",
+      "statLabels": ["Reach target", "ROAS target", "CPA target"]
+    },
+    "ideight": {
+      "title": "ID.EIGHT — Strategic analysis",
+      "meta": "Strategic analysis · 34-slide deck · Canva",
+      "tags": ["Strategic analysis", "Brand audit", "Positioning"],
+      "description": "Strategic analysis for ID.EIGHT, a sustainable sneaker brand: touchpoint audit, context and market, target definition, objectives and positioning. From reading the brand to a strategic direction in 34 slides."
+    },
+    "yoyo": {
+      "title": "YoYo — Funnel Marketing",
+      "meta": "Funnel marketing · 42-slide deck · Canva",
+      "tags": ["AAARRR funnel", "Growth", "A/B testing"],
+      "description": "End-to-end funnel strategy for an accessible, inclusive yoga platform: market and competitor analysis, four personas, an AAARRR funnel with channels and ROI, a KPI system, A/B test hypotheses, problem solving on conversion drop-offs and a 12-month roadmap."
+    }
+  },
+  "about": {
+    "overline": "About",
+    "title": "Strategy, and hands on the code.",
+    "body1": "I'm Gabriele Brunazzo, a digital media strategist. I design Meta advertising strategies — from market research to budget planning — and build the digital products that support them myself: sites, dashboards, archives.",
+    "body2": "Two crafts, one point of view: every creative choice has to answer to a measurable goal.",
+    "skills": [
+      "Meta Ads & funnels",
+      "Brand strategy",
+      "Web design & development",
+      "Data visualization",
+      "Reels creative",
+      "Canva & content design"
+    ],
+    "portraitAlt": "Portrait of Gabriele Brunazzo"
+  },
+  "contact": {
+    "overline": "Contact",
+    "titleLines": ["LET'S FIND", "YOUR ANGLE"],
+    "emailLabel": "Send an email to {email}",
+    "hwylLabel": "HWYL Studio"
+  },
+  "footer": {
+    "credit": "© {year} Gabriele Brunazzo",
+    "role": "Digital Media Strategist"
+  }
+}
